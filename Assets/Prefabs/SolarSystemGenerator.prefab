@@ -1,0 +1,118 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4353506945054787930
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4408543176043386425}
+  - component: {fileID: 3104505558844379770}
+  m_Layer: 0
+  m_Name: SolarSystemGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4408543176043386425
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4353506945054787930}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3104505558844379770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4353506945054787930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8137c6f632a9e5043bf04c98b28aa2b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  distanceScale: 500
+  planetSizeMultiplier: 3
+  simulationSpeed: 0.05
+  anchorPoint: {fileID: 0}
+  sunPrefab: {fileID: 3548356298615962880, guid: 5f776740c447e45afb25edbca842de92,
+    type: 3}
+  sunRelativeSize: 109
+  planets:
+  - name: Mercury
+    prefab: {fileID: 1856687845478954, guid: ab152f61198d54532ae39108e616ff59, type: 3}
+    distanceFromSunAU: 0.39
+    relativeSize: 0.38
+    orbitInclination: 7
+    orbitalPeriod: 0.24
+    simulationSpeed: 10
+    layerIndex: 6
+  - name: Venus
+    prefab: {fileID: 1647581975099426, guid: 835acc1a9ebe24c0fa3854c99346f9cd, type: 3}
+    distanceFromSunAU: 0.72
+    relativeSize: 0.95
+    orbitInclination: 3.4
+    orbitalPeriod: 0.62
+    simulationSpeed: 10
+    layerIndex: 7
+  - name: Earth
+    prefab: {fileID: 1733945558841920, guid: 300f80108a63f48618cb4a1c8b8c1e86, type: 3}
+    distanceFromSunAU: 1
+    relativeSize: 1
+    orbitInclination: 0
+    orbitalPeriod: 1
+    simulationSpeed: 10
+    layerIndex: 8
+  - name: Mars
+    prefab: {fileID: 1288793558353234, guid: 1818e1a170ef94c3aacee2ba50057521, type: 3}
+    distanceFromSunAU: 1.52
+    relativeSize: 0.53
+    orbitInclination: 1.9
+    orbitalPeriod: 1.88
+    simulationSpeed: 10
+    layerIndex: 9
+  - name: Jupiter
+    prefab: {fileID: 1526814149960808, guid: 7e4bfb3c6ba1d4bc4ba31d585abdae0f, type: 3}
+    distanceFromSunAU: 5.2
+    relativeSize: 11.21
+    orbitInclination: 1.3
+    orbitalPeriod: 11.86
+    simulationSpeed: 10
+    layerIndex: 10
+  - name: Saturn
+    prefab: {fileID: 1377197793697218, guid: b4201d402613a4464b35c805dafcca62, type: 3}
+    distanceFromSunAU: 9.58
+    relativeSize: 9.45
+    orbitInclination: 2.5
+    orbitalPeriod: 29.45
+    simulationSpeed: 10
+    layerIndex: 11
+  - name: Uranus
+    prefab: {fileID: 1014736895960144, guid: c91342f6e3afc48fd958056404ead345, type: 3}
+    distanceFromSunAU: 19.22
+    relativeSize: 4.01
+    orbitInclination: 0.8
+    orbitalPeriod: 84.02
+    simulationSpeed: 10
+    layerIndex: 12
+  - name: Neptune
+    prefab: {fileID: 1610884164528438, guid: 5d1442ad8c11442988e0eca5d8af73f0, type: 3}
+    distanceFromSunAU: 30.05
+    relativeSize: 3.88
+    orbitInclination: 1.8
+    orbitalPeriod: 164.8
+    simulationSpeed: 10
+    layerIndex: 13
