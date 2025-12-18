@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 89d4f72a99fdc034ba7807ff4853b7de
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - audioMixer: {fileID: 24100000, guid: 3a3f96fc754031b418bfc9a563c4dd26, type: 2}
+  - uiClick: {instanceID: 0}
+  - engineIdleSound: {instanceID: 0}
+  - thrustSound: {instanceID: 0}
+  - collisionSound: {instanceID: 0}
+  - winSound: {instanceID: 0}
+  - loseSound: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
