@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &4353506945054787930
+--- !u!1 &2937007777405043625
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,8 +8,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4408543176043386425}
-  - component: {fileID: 3104505558844379770}
+  - component: {fileID: 9215329098306173066}
+  - component: {fileID: 5362799604650638332}
   m_Layer: 0
   m_Name: SolarSystemGenerator
   m_TagString: Untagged
@@ -17,13 +17,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4408543176043386425
+--- !u!4 &9215329098306173066
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4353506945054787930}
+  m_GameObject: {fileID: 2937007777405043625}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -32,21 +32,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3104505558844379770
+--- !u!114 &5362799604650638332
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4353506945054787930}
+  m_GameObject: {fileID: 2937007777405043625}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8137c6f632a9e5043bf04c98b28aa2b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  distanceScale: 500
+  distanceScale: 1100
   planetSizeMultiplier: 3
-  simulationSpeed: 0.05
+  simulationSpeed: 0.0005
   anchorPoint: {fileID: 0}
   sunPrefab: {fileID: 3548356298615962880, guid: 5f776740c447e45afb25edbca842de92,
     type: 3}
