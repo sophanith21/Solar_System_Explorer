@@ -1,11 +1,17 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class LoadSence : MonoBehaviour
 {
-     
-    public void LoadScene(string sceneName)
+    public String nextScene;
+
+    public void LoadNextScene()
     {
-        SceneManager.LoadScene(sceneName);
+        SceneManagement.Instance.LoadScene(nextScene);
+    }
+    public void loadLastScene()
+    {
+        SceneManagement.Instance.GoBack();
     }
 }

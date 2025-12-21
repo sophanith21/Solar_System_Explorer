@@ -7,12 +7,22 @@ public class SpaceshipRB : MonoBehaviour
     public Rigidbody rb;
     public Transform model;
 
+    [Header("UI Settings")]
+    public spaceshipUI spaceshipUI;
+
+    [Header("Particle Effects")]
+    public ParticleSystem thrusterEffect_left;
+    public ParticleSystem thrusterEffect_right;
+    public ParticleSystem boostedEffect_left;
+    public ParticleSystem boostedEffect_right;
+
     [Header("Movement")]
     public float thrustForce = 30f;
     public float maxSpeed = 40f;
     public float boostMultiplier = 2f;
-    public float reverseMultiplier = 0.5f; // Slower than normal forward speed
+    public float reverseMultiplier = 0.5f;
     public float dragAmount = 1f;
+    public float distanceToTeleport = 50f;
 
     [Header("Rotation")]
     public float turnSpeed = 100f;
@@ -21,73 +31,99 @@ public class SpaceshipRB : MonoBehaviour
 
     [Header("Camera")]
     public CinemachineFreeLook freeLookCamera;
-    public float movementThreshold = 2f; // Speed at which the camera locks
+    public float movementThreshold = 2f;
 
+    [Header("Particle")]
+    public ParticleSystem portal;
+    public Transform portalTransform;
 
+    [Header("Portal Scaling")]
+    public float distanceToMove = 4f;
+    public float growthSpeed = 2f;
+    public Vector3 initialScale = new Vector3(1, 1, 1);
+    public Vector3 maxScale = new Vector3(40, 40, 40);
+
+    Vector3 initialPortalLocalPosition;
+    bool isPortalActive = false;
     bool isBoosted = false;
     float boostedThrustForce;
 
-    float yawInput;   // A/D (Left/Right)
-    float pitchInput; // Q/R (Down/Up)
+    float yawInput;
+    float pitchInput;
     float currentYawTilt;
     float currentPitchTilt;
 
-    
-
-    // Store the original speeds so we can restore them
     float originalXSpeed;
     float originalYSpeed;
 
     void Start()
     {
+        // Configure physics for space flight
         rb.useGravity = false;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.drag = dragAmount;
 
+        // Mouse behavior
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
+        // Store camera settings to restore them when ship stops
         originalXSpeed = freeLookCamera.m_XAxis.m_MaxSpeed;
         originalYSpeed = freeLookCamera.m_YAxis.m_MaxSpeed;
 
         boostedThrustForce = thrustForce * boostMultiplier;
+        initialPortalLocalPosition = portalTransform.localPosition;
+        portal.Stop();
     }
 
     void Update()
     {
         handleCameraLock();
-        if (Input.GetKeyDown(KeyCode.Escape))
+
+        // Determine boost state based on Shift key and Portal status
+        isBoosted = Input.GetKey(KeyCode.LeftShift) && !isPortalActive;
+        spaceshipUI.ToggleBoost(isBoosted);
+
+        // Portal activation logic with gated .Play() to prevent stuttering
+        if (Input.GetKey(KeyCode.F) && spaceshipUI.Warp(isPortalActive))
         {
-            Cursor.lockState = (Cursor.lockState == CursorLockMode.Locked) ? CursorLockMode.None : CursorLockMode.Locked;
-            Cursor.visible = !Cursor.visible;
+            if (!isPortalActive)
+            {
+                portal.Play();
+                isPortalActive = true;
+            }
+            portalTransform.localPosition -= new Vector3(0, 0, distanceToMove * Time.deltaTime);
+            portalTransform.localScale = Vector3.Lerp(portalTransform.localScale, maxScale, Time.deltaTime * growthSpeed);
+        }
+        else
+        {
+            if (isPortalActive)
+            {
+                portal.Stop();
+                isPortalActive = false;
+            }
+            portalTransform.localPosition = initialPortalLocalPosition;
+            portalTransform.localScale = Vector3.Lerp(portalTransform.localScale, initialScale, Time.deltaTime * growthSpeed);
         }
 
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.C))
         {
-            isBoosted = true;
-   
-        } else {
-            isBoosted = false;
-       
+            spaceshipUI.Heal(10 * Time.deltaTime);
         }
 
-        // 1. Get Inputs
-        yawInput = Input.GetAxis("Horizontal"); // A/D
-
-        // Manual Pitch Input using Q and R
+        // Gather flight inputs
+        yawInput = Input.GetAxis("Horizontal");
         pitchInput = 0;
-        if (Input.GetKey(KeyCode.E)) pitchInput = -1f; // Pitch Up
-        if (Input.GetKey(KeyCode.Q)) pitchInput = 1f;  // Pitch Down
-        if (Input.GetKey(KeyCode.R)) pitchInput = 0f;  // Neutral
+        if (Input.GetKey(KeyCode.E)) pitchInput = -1f;
+        if (Input.GetKey(KeyCode.Q)) pitchInput = 1f;
 
-        // 2. Handle Visual Banking & Pitching (The "Lean")
+        // Visual banking: Tilts the visual model without affecting physics rotation
         float targetYawTilt = -yawInput * tiltAngle;
-        float targetPitchTilt = pitchInput * (tiltAngle * 0.5f); // Half tilt for pitch looks better
+        float targetPitchTilt = pitchInput * (tiltAngle * 0.5f);
 
         currentYawTilt = Mathf.Lerp(currentYawTilt, targetYawTilt, Time.deltaTime * tiltSpeed);
         currentPitchTilt = Mathf.Lerp(currentPitchTilt, targetPitchTilt, Time.deltaTime * tiltSpeed);
 
-        // Apply to the model local rotation
         model.localRotation = Quaternion.Euler(currentPitchTilt, 0f, currentYawTilt);
     }
 
@@ -99,26 +135,20 @@ public class SpaceshipRB : MonoBehaviour
 
     void HandleRotation()
     {
-        // 3. Rotate the Rigidbody
         float yaw = yawInput * turnSpeed * Time.fixedDeltaTime;
         float pitch = pitchInput * turnSpeed * Time.fixedDeltaTime;
 
-        // Create rotation for both Yaw (Y axis) and Pitch (X axis)
-        Quaternion deltaRotation = Quaternion.Euler(pitch, yaw, 0f);
         if (yawInput == 0 && pitchInput == 0)
         {
-            // Smoothly rotate the ship's X and Z back to 0 (Leveling the nose and wings)
-            // We keep the current Y (Yaw) so the ship doesn't spin back to the North Pole
+            // Auto-leveling: Smoothly returns X and Z rotation to 0 when no input is given
             Vector3 currentEuler = rb.rotation.eulerAngles;
-
-            // We target 0 for Pitch (X) and 0 for Roll (Z)
             Quaternion leveledRot = Quaternion.Euler(0f, currentEuler.y, 0f);
-
             rb.MoveRotation(Quaternion.Slerp(rb.rotation, leveledRot, Time.fixedDeltaTime * 2f));
         }
         else
         {
-            // Apply normal movement
+            // Apply 3D rotation based on player input
+            Quaternion deltaRotation = Quaternion.Euler(pitch, yaw, 0f);
             rb.MoveRotation(rb.rotation * deltaRotation);
         }
     }
@@ -128,60 +158,86 @@ public class SpaceshipRB : MonoBehaviour
         float currentMaxSpeed = isBoosted ? maxSpeed * boostMultiplier : maxSpeed;
         float currentThrust = isBoosted ? boostedThrustForce : thrustForce;
 
-        // Forward Thrust (W)
         if (Input.GetKey(KeyCode.W))
         {
             SFXManager.Instance.StopEngineIdle();
-
-            rb.AddForce(transform.forward * currentThrust, ForceMode.Acceleration);
             SFXManager.Instance.StartThrust();
+            rb.AddForce(transform.forward * currentThrust, ForceMode.Acceleration);
+
+            // Gated Particle Logic: Only calls Play/Stop when switching states to prevent flickering
+            if (isBoosted)
+            {
+                if (thrusterEffect_left.isPlaying) { thrusterEffect_left.Stop(); thrusterEffect_right.Stop(); }
+                if (!boostedEffect_left.isPlaying) { boostedEffect_left.Play(); boostedEffect_right.Play(); }
+            }
+            else
+            {
+                if (boostedEffect_left.isPlaying) { boostedEffect_left.Stop(); boostedEffect_right.Stop(); }
+                if (!thrusterEffect_left.isPlaying) { thrusterEffect_left.Play(); thrusterEffect_right.Play(); }
+            }
         }
-        else if (Input.GetKey(KeyCode.S)) // Backtracking / Reverse (S)
+        else if (Input.GetKey(KeyCode.S))
         {
             SFXManager.Instance.StopEngineIdle();
-
-            // We apply force in the opposite direction of transform.forward
-            rb.AddForce(-transform.forward * (thrustForce * reverseMultiplier), ForceMode.Acceleration);
-
-            // Adjust max speed for reversing so you don't go 40mph backwards
-            currentMaxSpeed = maxSpeed * reverseMultiplier;
             SFXManager.Instance.StartThrust();
+            rb.AddForce(-transform.forward * (thrustForce * reverseMultiplier), ForceMode.Acceleration);
+            currentMaxSpeed = maxSpeed * reverseMultiplier;
+            StopAllThrusters();
         }
         else
         {
+            // Neutral state: Return to idle sounds and kill all exhaust particles
             SFXManager.Instance.StopThrust();
             SFXManager.Instance.StartEngineIdle();
+            StopAllThrusters();
         }
 
-        // Clamp speed based on current state (Boosting vs Reversing vs Normal)
+        // Hard cap for velocity based on current state (boost/normal/reverse)
         if (rb.velocity.magnitude > currentMaxSpeed)
         {
             rb.velocity = rb.velocity.normalized * currentMaxSpeed;
         }
     }
 
-    void handleCameraLock()
+    void StopAllThrusters()
     {
-        if (rb.velocity.magnitude > movementThreshold)
-        {
-            freeLookCamera.m_XAxis.m_MaxSpeed = 0f;
-            freeLookCamera.m_YAxis.m_MaxSpeed = 0f;
-        }
-        else
-        {
-            freeLookCamera.m_XAxis.m_MaxSpeed = originalXSpeed;
-            freeLookCamera.m_YAxis.m_MaxSpeed = originalYSpeed;
-        }
+        if (thrusterEffect_left.isPlaying) { thrusterEffect_left.Stop(); thrusterEffect_right.Stop(); }
+        if (boostedEffect_left.isPlaying) { boostedEffect_left.Stop(); boostedEffect_right.Stop(); }
     }
 
- 
+    void handleCameraLock()
+    {
+        // Locks the FreeLook camera orbit when the ship is moving fast to keep focus forward
+        bool shouldLock = rb.velocity.magnitude > movementThreshold;
+        freeLookCamera.m_XAxis.m_MaxSpeed = shouldLock ? 0f : originalXSpeed;
+        freeLookCamera.m_YAxis.m_MaxSpeed = shouldLock ? 0f : originalYSpeed;
+    }
+
+    public void teleportSpaceship()
+    {
+        // Temporarily disable interpolation to prevent the camera from "stretching" during teleport
+        rb.interpolation = RigidbodyInterpolation.None;
+        rb.position += transform.forward * distanceToTeleport;
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
+    }
 
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Asteroid"))
         {
             SFXManager.Instance.PlayCollision();
+            // Damage scale based on how fast the ship was moving at impact
+            spaceshipUI.Damage(rb.velocity.magnitude * 0.2f);
         }
-        Debug.Log("Collided with " + collision.gameObject.name);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        // Logic for "ghost" colliders like pick-ups
+        if (other.CompareTag("EnergyOrb"))
+        {
+            spaceshipUI.UpdateEnergy(20f);
+            other.gameObject.SetActive(false);
+        }
     }
 }

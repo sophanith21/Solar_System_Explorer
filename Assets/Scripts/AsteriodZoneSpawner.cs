@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class AsteroidZoneSpawner : MonoBehaviour
 {
     public Transform player;
     public GameObject asteriodPrefab;
+    public GameObject orbPrefab;
     public float spawnDistanceAhead = 15f;
     public float spawnWidth = 10f;
     public float spawnHeight = 8f;
@@ -15,6 +17,8 @@ public class AsteroidZoneSpawner : MonoBehaviour
 
     float currentTime = 0f;
     List<GameObject> asteroidGameObjects = new List<GameObject>();
+
+    GameObject? orbGameObject = null;
     bool isFar = true; // Must initialized with TRUE because the first asteroid batch must be spawned
 
     public Vector3 GetRandomSpawnPosition()
@@ -52,14 +56,28 @@ public class AsteroidZoneSpawner : MonoBehaviour
                     asteriodPrefab.layer = player.gameObject.layer;
                     GameObject asteroid = Instantiate(asteriodPrefab, spawnPosition, Quaternion.identity);
                     asteroid.tag = "Asteroid";
+                    asteroid.transform.SetParent(this.transform);
                     asteroidGameObjects.Add(asteroid);
+                    if (orbGameObject == null)
+                    {
+                        Debug.Log(" spawning orb...");
+                        Vector3 orbSpawnPosition = GetRandomSpawnPosition();
+                        orbPrefab.layer = player.gameObject.layer;
+                        orbGameObject = Instantiate(orbPrefab, orbSpawnPosition, Quaternion.identity);
+                        orbGameObject.tag = "EnergyOrb";
+                        orbGameObject.transform.SetParent(this.transform);
+                    }
 
-                }else
+                }
+                else
                 {
                     Debug.Log(" Reusing asteroid...");
                     GameObject asteroidToRecycle = asteroidGameObjects[i];
-                    asteroidToRecycle.transform.position = GetRandomSpawnPosition();
-                    asteroidToRecycle.SetActive(true);
+                    RecycleGameObject(asteroidToRecycle);
+                    if (orbGameObject != null)
+                    {
+                        RecycleGameObject(orbGameObject);
+                    }
                 }
                 
             }
@@ -88,9 +106,9 @@ public class AsteroidZoneSpawner : MonoBehaviour
     }
 
     // Pooling manager:
-    void RecycleAsteroid(GameObject asteroidToRecycle) {
-        asteroidToRecycle.transform.position = GetRandomSpawnPosition();
-        asteroidToRecycle.SetActive(true);
+    void RecycleGameObject(GameObject gameObject) {
+        gameObject.transform.position = GetRandomSpawnPosition();
+        gameObject.SetActive(true);
     }
 
     

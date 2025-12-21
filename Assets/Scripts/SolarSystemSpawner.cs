@@ -73,85 +73,76 @@ public class SolarSystemSpawner : MonoBehaviour
 
     void SpawnPlanets()
     {
+    
         if (planets.Count == 0)
         {
             Debug.LogWarning("No planet data entered!");
             return;
         }
 
-
         foreach (PlanetData planet in planets)
         {
             if (planet.prefab == null) continue;
 
-            
-
             // 1. Calculate Position
-            // We use a random angle to scatter them around the sun so they aren't in a straight line
             float randomAngle = Random.Range(0f, 360f) * Mathf.Deg2Rad;
-
-            // Calculate X and Z based on angle and distance (Polar to Cartesian coordinates)
             float currentDistance = planet.distanceFromSunAU * distanceScale;
-
             float x = Mathf.Cos(randomAngle) * currentDistance;
             float z = Mathf.Sin(randomAngle) * currentDistance;
-
-            // Calculate Y based on Inclination (simplified)
-            // Tan(inclination) = y / distance
             float y = Mathf.Tan(planet.orbitInclination * Mathf.Deg2Rad) * currentDistance;
-
             Vector3 spawnPos = new Vector3(x, y, z) + transform.position;
 
-
-            // 2. Instantiate
+            // 2. Instantiate Planet
             GameObject newPlanet = Instantiate(planet.prefab, spawnPos, Quaternion.identity);
             newPlanet.name = planet.name;
             newPlanet.transform.SetParent(this.transform);
 
-
             // 3. Apply Scale
-            // Default Earth diameter in Unity is usually assumed to be 1 unit for reference
             float finalSize = planet.relativeSize * planetSizeMultiplier;
             newPlanet.transform.localScale = Vector3.one * finalSize;
 
+            // 4. Create Compensator Light
             GameObject lightGameObject = new GameObject(planet.name + "CompensatorLight");
             Light compensatorLight = lightGameObject.AddComponent<Light>();
             compensatorLight.type = UnityEngine.LightType.Directional;
-            compensatorLight.intensity = 2f; 
-            compensatorLight.shadows = LightShadows.Hard; 
-           
-            compensatorLight.useColorTemperature = true;     
-            compensatorLight.colorTemperature = 5000f;      
+            compensatorLight.intensity = 2f;
+            compensatorLight.shadows = LightShadows.Hard;
+            compensatorLight.useColorTemperature = true;
+            compensatorLight.colorTemperature = 5000f;
             compensatorLight.color = Color.white;
 
-
-
             lightGameObject.transform.LookAt(anchorPoint);
-
             Vector3 midpoint = (spawnPos + anchorPoint.position) / 2;
-
             Vector3 direction = (spawnPos - anchorPoint.position);
-
-
             lightGameObject.transform.position = midpoint + (direction * 0.35f);
-
             lightGameObject.transform.SetParent(newPlanet.transform);
 
-
-            // Set Culling Mask to ONLY affect the planet's layer
             compensatorLight.cullingMask = 1 << planet.layerIndex;
 
+            // 5. Add PlanetOrbiter
+            newPlanet.AddComponent<PlanetOrbiter>().Setup(
+                this.transform,
+                planet.orbitalPeriod,
+                planet.orbitInclination,
+                simulationSpeed,
+                lightGameObject.transform,
+                anchorPoint
+            );
 
-            
-
-
-            newPlanet.AddComponent<PlanetOrbiter>().Setup(this.transform,planet.orbitalPeriod,planet.orbitInclination,simulationSpeed,lightGameObject.transform,anchorPoint);
-
-
-            // Ensure all child objects are on the correct layer too
+            // 6. Set layers recursively
             SetLayerRecursively(newPlanet.transform, planet.layerIndex);
-            
-            
+
+            // --- 7. REGISTER PLANET WITH DIFFICULTY SYSTEM ---
+            if (DifficultySystem.Instance != null)
+            {
+                DifficultySystem.Instance.RegisterPlanet(newPlanet, planet.name, planet.distanceFromSunAU);
+            }
+        }
+
+        // --- 8. Generate missions after all planets are spawned ---
+        if (DifficultySystem.Instance != null)
+        {
+            DifficultySystem.Instance.GenerateAllMissions();
         }
     }
 

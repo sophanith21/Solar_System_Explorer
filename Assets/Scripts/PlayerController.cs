@@ -1,13 +1,21 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class FreeCameraController : MonoBehaviour
 {
+    [Header("Pause Settings")]
+    public GameObject pauseMenu;
+    [Header("Movement Settings")]
     public float moveSpeed = 300f;
     public float lookSpeed = 3f;
     public float scrollSpeed = 500f;
     public float boostMultiplier = 5f;
 
+    [Header("Focus Settings")]
+    // Orbit settings
+    public float orbitSpeed = 90f; // degrees per second
+    public float orbitDistanceMultiplier = 2.5f;
 
     float rotationX = 0f;
     float rotationY = 0f;
@@ -16,8 +24,20 @@ public class FreeCameraController : MonoBehaviour
 
     void Update()
     {
-        HandleLook();
-        HandleMovement();
+        if (SceneManager.GetActiveScene().name == "Learning Mode")
+        {
+            HandleLook();
+            HandleMovement();
+            if (Input.GetKeyDown(KeyCode.M))
+            {
+                TogglePause();
+            }
+        }
+    }
+
+    public void TogglePause()
+    {
+        pauseMenu.SetActive(!pauseMenu.activeSelf);
     }
 
     void HandleLook()
@@ -42,44 +62,38 @@ public class FreeCameraController : MonoBehaviour
         if (Input.GetKey(KeyCode.Q)) move += Vector3.down * 2f;
         if (Input.GetKey(KeyCode.E)) move += Vector3.up * 2f;
 
-        // Base speed
         float speed = moveSpeed;
+        if (Input.GetKey(KeyCode.LeftShift)) speed *= boostMultiplier;
 
-        // 🚀 Speed boost (SHIFT)
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            speed *= boostMultiplier;
-        }
-
-        // 🌌 Distance-based speed (solar scale)
         float distanceFromCenter = transform.position.magnitude;
         float dynamicMultiplier = Mathf.Max(1f, distanceFromCenter * 0.01f);
 
         transform.position += move * speed * dynamicMultiplier * Time.deltaTime;
 
-        // Zoom
         float scroll = Input.GetAxis("Mouse ScrollWheel");
         transform.position += transform.forward * scroll * scrollSpeed * Time.deltaTime;
     }
-
 
     public void FocusOnPlanet(Transform planet, bool followPlanet = true)
     {
         if (focusRoutine != null)
             StopCoroutine(focusRoutine);
 
-        focusRoutine = StartCoroutine(FocusOn(planet, followPlanet));
+        // Only these planets orbit
+        bool shouldOrbit = planet.name == "Jupiter" || planet.name == "Saturn" ||
+                           planet.name == "Uranus" || planet.name == "Neptune";
+
+        focusRoutine = StartCoroutine(FocusOn(planet, followPlanet, shouldOrbit));
     }
 
-
-    IEnumerator FocusOn(Transform target, bool followPlanet = true)
+    IEnumerator FocusOn(Transform target, bool followPlanet, bool orbitPlanet)
     {
+        // Initial direction & distance
         Vector3 direction = (transform.position - target.position).normalized;
-        float size = target.localScale.x;
-        float distance = size * 2.5f;
+        float baseDistance = target.localScale.x * orbitDistanceMultiplier;
 
-        // Smoothly move to initial position first
-        Vector3 targetPos = target.position + direction * distance;
+        // Smooth initial move
+        Vector3 targetPos = target.position + direction * baseDistance;
         float t = 0f;
         Vector3 startPos = transform.position;
         Quaternion startRot = transform.rotation;
@@ -96,14 +110,40 @@ public class FreeCameraController : MonoBehaviour
             yield return null;
         }
 
-        // After reaching, follow continuously
         while (followPlanet)
         {
-            transform.position = target.position + direction * distance;
-            transform.rotation = Quaternion.LookRotation(target.position - transform.position);
+            if (orbitPlanet)
+            {
+                // Calculate current offset from planet
+                Vector3 offset = transform.position - target.position;
+
+                // Keep distance proportional to planet size
+                float desiredDistance = target.localScale.x * orbitDistanceMultiplier;
+                offset = offset.normalized * desiredDistance;
+
+                // Apply orbit around the planet
+                transform.RotateAround(target.position, Vector3.up, orbitSpeed * Time.deltaTime);
+
+                // After rotation, adjust position to maintain consistent distance
+                Vector3 newOffset = transform.position - target.position;
+                newOffset = newOffset.normalized * desiredDistance;
+                transform.position = target.position + newOffset;
+
+
+                // Always look at the planet
+                transform.LookAt(target.position);
+            }
+            else
+            {
+                // Non-orbit planets: follow at fixed offset
+                Vector3 followPos = target.position + direction * baseDistance;
+                transform.position = followPos;
+                transform.LookAt(target.position);
+
+            }
+
             yield return null;
         }
+
     }
-
-
 }

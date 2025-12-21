@@ -8,6 +8,7 @@ TagManager:
   - Actors
   - spaceship
   - Asteroid
+  - EnergyOrb
   layers:
   - Default
   - TransparentFX
