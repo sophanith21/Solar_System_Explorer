@@ -12,12 +12,18 @@ public class spaceshipUI : MonoBehaviour
     public TextMeshProUGUI healthText;
     public Image healthBar;
 
+    [Header("Energy UI")]
+    public Image energyBar;
+
     [Header("Screen Effects")]
     public Image screenOverlay;     // Fullscreen UI Image
     public Camera mainCamera;
 
     [Header("Settings")]
     float health, maxHealth = 100f;
+    float energy, maxEnergy = 100f;
+    float energyPerHealFactor = 1.5f;
+    float energyPerWarp = 20f;
     float lerpSpeed;
     public float shakeDuration = 0.15f;
     public float shakeStrength = 0.15f;
@@ -36,6 +42,7 @@ public class spaceshipUI : MonoBehaviour
     void Start()
     {
         health = maxHealth;
+        energy = maxEnergy;
         cameraOriginalPos = mainCamera.transform.localPosition;
         screenOverlay.color = new Color(1, 1, 1, 0); // transparent
 
@@ -49,18 +56,20 @@ public class spaceshipUI : MonoBehaviour
             TogglePause();
         }
 
-       
+
         Cursor.visible = isPaused;
-        Cursor.lockState = isPaused ? CursorLockMode.None:CursorLockMode.Locked;
-        
+        Cursor.lockState = isPaused ? CursorLockMode.None : CursorLockMode.Locked;
+
 
 
         HealthBar();
         healthText.text = Mathf.RoundToInt(health).ToString();
 
+        EnergyBar();
+
         lerpSpeed = 3f * Time.deltaTime;
 
-        
+
         FadeOverlay();
     }
 
@@ -68,6 +77,12 @@ public class spaceshipUI : MonoBehaviour
     {
         float targetHealth = health / maxHealth;
         healthBar.fillAmount = Mathf.Lerp(healthBar.fillAmount, targetHealth, lerpSpeed);
+    }
+
+    void EnergyBar()
+    {
+        float targetEnergy = energy / maxEnergy;
+        energyBar.fillAmount = Mathf.Lerp(energyBar.fillAmount, targetEnergy, lerpSpeed);
     }
 
     void changeColor()
@@ -97,14 +112,31 @@ public class spaceshipUI : MonoBehaviour
 
     public void Heal(float heal)
     {
-
+        if (isDead || health == maxHealth) return;
+        if (energy - (heal*energyPerHealFactor) < 0) return;
+        UpdateEnergy(-(heal * energyPerHealFactor));
         health = Mathf.Clamp(health + heal, 0, maxHealth);
         FlashOverlay(Color.green);
     }
 
+    public bool Warp(bool isPortalActive)
+    {
+        if (!isPortalActive)
+        {
+            if (energy - energyPerWarp < 0)
+            {
+                StartCoroutine(CameraShake());
+                return false;
+            }
+            UpdateEnergy(-energyPerWarp);
+            return true;
+        }
+        return true;
+    }
+
     void FlashOverlay(Color color)
     {
-        color.a = 0.4f; // flash intensity
+        color.a = 0.2f; // flash intensity
         screenOverlay.color = color;
     }
 
@@ -205,6 +237,13 @@ public class spaceshipUI : MonoBehaviour
             boostPanel.SetActive(isBoost);
             Debug.Log("UI Updated only when needed!");
         }
+    }
+
+    // Amount can be positive for addition and negative for subtraction
+    public void UpdateEnergy(float amount)
+    {
+        float newEnergy = Mathf.Clamp(energy + amount, 0, maxEnergy);
+        energy = newEnergy;
     }
 
 }

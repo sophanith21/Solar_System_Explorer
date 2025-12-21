@@ -4,11 +4,15 @@ using UnityEngine.SceneManagement;
 
 public class FreeCameraController : MonoBehaviour
 {
+    [Header("Pause Settings")]
+    public GameObject pauseMenu;
+    [Header("Movement Settings")]
     public float moveSpeed = 300f;
     public float lookSpeed = 3f;
     public float scrollSpeed = 500f;
     public float boostMultiplier = 5f;
 
+    [Header("Focus Settings")]
     // Orbit settings
     public float orbitSpeed = 90f; // degrees per second
     public float orbitDistanceMultiplier = 2.5f;
@@ -24,7 +28,16 @@ public class FreeCameraController : MonoBehaviour
         {
             HandleLook();
             HandleMovement();
+            if (Input.GetKeyDown(KeyCode.M))
+            {
+                TogglePause();
+            }
         }
+    }
+
+    public void TogglePause()
+    {
+        pauseMenu.SetActive(!pauseMenu.activeSelf);
     }
 
     void HandleLook()
