@@ -52,6 +52,7 @@ public class AsteroidZoneSpawner : MonoBehaviour
                     asteriodPrefab.layer = player.gameObject.layer;
                     GameObject asteroid = Instantiate(asteriodPrefab, spawnPosition, Quaternion.identity);
                     asteroid.tag = "Asteroid";
+                    asteroid.transform.SetParent(this.transform);
                     asteroidGameObjects.Add(asteroid);
 
                 }else

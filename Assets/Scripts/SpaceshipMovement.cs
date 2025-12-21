@@ -7,12 +7,16 @@ public class SpaceshipRB : MonoBehaviour
     public Rigidbody rb;
     public Transform model;
 
+    [Header("UI Settings")]
+    public spaceshipUI spaceshipUI;
+
     [Header("Movement")]
     public float thrustForce = 30f;
     public float maxSpeed = 40f;
     public float boostMultiplier = 2f;
     public float reverseMultiplier = 0.5f; // Slower than normal forward speed
     public float dragAmount = 1f;
+    public float distanceToTeleport = 50f;
 
     [Header("Rotation")]
     public float turnSpeed = 100f;
@@ -22,6 +26,19 @@ public class SpaceshipRB : MonoBehaviour
     [Header("Camera")]
     public CinemachineFreeLook freeLookCamera;
     public float movementThreshold = 2f; // Speed at which the camera locks
+
+    [Header("Particle")]
+    public ParticleSystem portal;
+    public Transform portalTransform;
+
+    [Header("Portal Scaling")]
+    public float distanceToMove = 4f; // How much the portal moves forward when activated
+    public float growthSpeed = 2f; // How fast it grows
+    public Vector3 initialScale = new Vector3(1, 1, 1);
+    public Vector3 maxScale = new Vector3(40, 40, 40);
+
+    Vector3 initialPortalLocalPosition;
+    bool isPortalActive = false;
 
 
     bool isBoosted = false;
@@ -51,24 +68,48 @@ public class SpaceshipRB : MonoBehaviour
         originalYSpeed = freeLookCamera.m_YAxis.m_MaxSpeed;
 
         boostedThrustForce = thrustForce * boostMultiplier;
+        initialPortalLocalPosition = portalTransform.localPosition;
+        portal.Stop(); 
     }
 
     void Update()
     {
         handleCameraLock();
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Cursor.lockState = (Cursor.lockState == CursorLockMode.Locked) ? CursorLockMode.None : CursorLockMode.Locked;
-            Cursor.visible = !Cursor.visible;
-        }
-
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftShift) && !isPortalActive )
         {
             isBoosted = true;
    
         } else {
             isBoosted = false;
        
+        }
+
+        if (isBoosted)
+        {
+            spaceshipUI.ToggleBoost(true);
+        }
+        else 
+        { 
+            spaceshipUI.ToggleBoost(false);
+        }
+
+        if (Input.GetKey(KeyCode.F))
+        {
+           
+            if (!isPortalActive)
+            {
+                portal.Play();
+                isPortalActive = true;
+            }
+            portalTransform.localPosition = new Vector3(portalTransform.localPosition.x, portalTransform.localPosition.y, portalTransform.localPosition.z - distanceToMove*Time.deltaTime);
+            portalTransform.localScale = Vector3.Lerp(portalTransform.localScale, new Vector3(40, 40, 40), Time.deltaTime * growthSpeed);
+        }
+        else
+        {
+            isPortalActive = false;
+            portal.Stop();
+            portalTransform.localPosition = initialPortalLocalPosition;
+            portalTransform.localScale = Vector3.Lerp(portalTransform.localScale, initialScale, Time.deltaTime * growthSpeed);
         }
 
         // 1. Get Inputs
@@ -174,6 +215,24 @@ public class SpaceshipRB : MonoBehaviour
         }
     }
 
+    public void teleportSpaceship()
+    {
+        // 1. Tell the Rigidbody we are about to move it manually
+        Vector3 newPosition = rb.position + (transform.forward * distanceToTeleport);
+        rb.position = newPosition;
+        
+
+        // 2. IMPORTANT: Manually sync the transform to the physics engine
+        // This prevents the 'snapping back' or interpolation glitches
+        rb.interpolation = RigidbodyInterpolation.None;
+
+        // 3. Optional: Clear the velocity so you don't keep your old speed 
+        // at the new location (unless you want to keep the momentum)
+
+        // 4. Turn interpolation back on for smooth movement after teleport
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
+    }
+
  
 
     private void OnCollisionEnter(Collision collision)
@@ -181,6 +240,7 @@ public class SpaceshipRB : MonoBehaviour
         if (collision.gameObject.CompareTag("Asteroid"))
         {
             SFXManager.Instance.PlayCollision();
+            spaceshipUI.Damage(rb.velocity.magnitude * 0.2f);
         }
         Debug.Log("Collided with " + collision.gameObject.name);
     }

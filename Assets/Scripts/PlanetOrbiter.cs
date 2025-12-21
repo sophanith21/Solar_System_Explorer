@@ -21,7 +21,6 @@ public class PlanetOrbiter : MonoBehaviour
 
     private Transform anchorPoint;
 
-    
     public void Setup(Transform center, float orbitalPeriod, float inclination, float simulationSpeed,Transform lightTransform, Transform anchorPoint)
     {
         sunCenter = center;
