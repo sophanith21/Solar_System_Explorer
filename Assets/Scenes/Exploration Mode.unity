@@ -1060,19 +1060,6 @@ ParticleSystem:
     type: 3}
   m_PrefabInstance: {fileID: 1481190919}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &525572714
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 525572709}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e18c8ed64c3acda4b83bd2c67705153c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spaceShipController: {fileID: 1762009398}
 --- !u!224 &547286612 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2129436451679342235, guid: d4f1855e889ac3046a479d3c53f3cf75,
@@ -1958,11 +1945,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5607819269926399345, guid: 45e0f06c750176947862c10346226439,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 525572714}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 45e0f06c750176947862c10346226439, type: 3}
 --- !u!4 &1567448555 stripped
 Transform:
@@ -2196,22 +2179,22 @@ PrefabInstance:
     - target: {fileID: 1584471573960825143, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.75180453
+      value: 0.7518046
       objectReference: {fileID: 0}
     - target: {fileID: 1584471573960825143, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.008412277
+      value: 0.008412278
       objectReference: {fileID: 0}
     - target: {fileID: 1584471573960825143, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.6592912
+      value: 0.65929115
       objectReference: {fileID: 0}
     - target: {fileID: 1584471573960825143, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.0073771044
+      value: -0.0073771016
       objectReference: {fileID: 0}
     - target: {fileID: 2065415998427779272, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
@@ -3026,22 +3009,22 @@ PrefabInstance:
     - target: {fileID: 6645804383417131878, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.75180453
+      value: 0.7518046
       objectReference: {fileID: 0}
     - target: {fileID: 6645804383417131878, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.008412277
+      value: 0.008412274
       objectReference: {fileID: 0}
     - target: {fileID: 6645804383417131878, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.6592912
+      value: 0.65929115
       objectReference: {fileID: 0}
     - target: {fileID: 6645804383417131878, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.0073771044
+      value: -0.007377097
       objectReference: {fileID: 0}
     - target: {fileID: 6780842182624613731, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
@@ -3146,22 +3129,22 @@ PrefabInstance:
     - target: {fileID: 8438722331001098051, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.75180453
+      value: 0.7518046
       objectReference: {fileID: 0}
     - target: {fileID: 8438722331001098051, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.008412277
+      value: 0.0084122745
       objectReference: {fileID: 0}
     - target: {fileID: 8438722331001098051, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.6592912
+      value: 0.65929115
       objectReference: {fileID: 0}
     - target: {fileID: 8438722331001098051, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.0073771044
+      value: -0.007377098
       objectReference: {fileID: 0}
     - target: {fileID: 8502307218804101357, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
@@ -3201,6 +3184,10 @@ PrefabInstance:
         type: 3}
       insertIndex: 4
       addedObject: {fileID: 1762009396}
+    - targetCorrespondingSourceObject: {fileID: 5999456306761480082, guid: 73032a1bcf63f42d7a7045d78b4c3120,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1762009399}
   m_SourcePrefab: {fileID: 100100000, guid: 73032a1bcf63f42d7a7045d78b4c3120, type: 3}
 --- !u!1 &1613371247
 GameObject:
@@ -3301,6 +3288,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 475031481f24f4718b42db31d87e80f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1762009399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 838652059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e18c8ed64c3acda4b83bd2c67705153c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spaceShipController: {fileID: 1762009398}
 --- !u!1 &1773028925
 GameObject:
   m_ObjectHideFlags: 0

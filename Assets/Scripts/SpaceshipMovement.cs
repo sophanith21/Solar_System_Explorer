@@ -45,6 +45,8 @@ public class SpaceshipRB : MonoBehaviour
 
     Vector3 initialPortalLocalPosition;
     bool isPortalActive = false;
+
+    public bool hasTeleported = false;
     bool isBoosted = false;
     float boostedThrustForce;
 
@@ -104,6 +106,7 @@ public class SpaceshipRB : MonoBehaviour
             }
             portalTransform.localPosition = initialPortalLocalPosition;
             portalTransform.localScale = Vector3.Lerp(portalTransform.localScale, initialScale, Time.deltaTime * growthSpeed);
+            hasTeleported = false;
         }
 
         if (Input.GetKey(KeyCode.C))
@@ -219,6 +222,7 @@ public class SpaceshipRB : MonoBehaviour
         rb.interpolation = RigidbodyInterpolation.None;
         rb.position += transform.forward * distanceToTeleport;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
+        hasTeleported = true;
     }
 
     private void OnCollisionEnter(Collision collision)
