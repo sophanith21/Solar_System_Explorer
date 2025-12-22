@@ -25,7 +25,7 @@ public class SceneManagement : MonoBehaviour
     {
         // Save previous scene by name
         previousScene = SceneManager.GetActiveScene().name;
-
+        Time.timeScale = 1f;
         SceneManager.LoadScene(sceneName);
     }
 

@@ -198,9 +198,10 @@ public class spaceshipUI : MonoBehaviour
 
             yield return null;
         }
-        SceneManagement.Instance.LoadScene("Losing Scene");
+        
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        SceneManagement.Instance.LoadScene("Losing Scene");
     }
 
 
@@ -217,8 +218,6 @@ public class spaceshipUI : MonoBehaviour
 
         pausePanel.SetActive(isPaused);
         Time.timeScale = isPaused ? 0f : 1f;
-
-        // playerController.enabled = !isPaused;
     }
 
     [Header("Boost")]

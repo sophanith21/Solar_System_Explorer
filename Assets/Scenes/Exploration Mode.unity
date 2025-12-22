@@ -364,7 +364,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.008412274, y: 0.65929115, z: -0.0073770946, w: 0.75180453}
+  m_LocalRotation: {x: 0.008412276, y: 0.6592912, z: -0.0073771044, w: 0.7518045}
   m_LocalPosition: {x: -1105.097, y: 4.1023564, z: -25.74152}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2168,6 +2168,16 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 14
       objectReference: {fileID: 0}
+    - target: {fileID: 1577636674359396488, guid: 73032a1bcf63f42d7a7045d78b4c3120,
+        type: 3}
+      propertyPath: m_FollowOffset.y
+      value: 0.18
+      objectReference: {fileID: 0}
+    - target: {fileID: 1577636674359396488, guid: 73032a1bcf63f42d7a7045d78b4c3120,
+        type: 3}
+      propertyPath: m_FollowOffset.z
+      value: -3
+      objectReference: {fileID: 0}
     - target: {fileID: 1584471573960825143, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2843,6 +2853,16 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 14
       objectReference: {fileID: 0}
+    - target: {fileID: 4853337967126723946, guid: 73032a1bcf63f42d7a7045d78b4c3120,
+        type: 3}
+      propertyPath: m_FollowOffset.y
+      value: 0.18
+      objectReference: {fileID: 0}
+    - target: {fileID: 4853337967126723946, guid: 73032a1bcf63f42d7a7045d78b4c3120,
+        type: 3}
+      propertyPath: m_FollowOffset.z
+      value: -3
+      objectReference: {fileID: 0}
     - target: {fileID: 4919020598935395506, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
       propertyPath: m_Layer
@@ -3082,6 +3102,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 8217210923462819106, guid: 73032a1bcf63f42d7a7045d78b4c3120,
+        type: 3}
+      propertyPath: m_FollowOffset.y
+      value: 0.18
+      objectReference: {fileID: 0}
+    - target: {fileID: 8217210923462819106, guid: 73032a1bcf63f42d7a7045d78b4c3120,
+        type: 3}
+      propertyPath: m_FollowOffset.z
+      value: -3
       objectReference: {fileID: 0}
     - target: {fileID: 8408588157262193771, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
