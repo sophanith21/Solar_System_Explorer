@@ -8,10 +8,9 @@ public class AudioManager : MonoBehaviour
     [Header("Audio Mixer")]
     [SerializeField] private AudioMixer audioMixer;
 
-    private const string MUSIC_VOL = "MusicVolume";
-    private const string SFX_VOL = "SFXVolume";
-    private const string UI_VOL = "UIVolume";
-
+    public const string MUSIC_VOL = "MusicVolume";
+    public const string SFX_VOL = "SFXVolume";
+    public const string UI_VOL = "UIVolume";
     private void Awake()
     {
         // Singleton pattern

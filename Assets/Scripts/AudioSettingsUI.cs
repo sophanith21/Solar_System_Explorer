@@ -15,10 +15,10 @@ public class AudioSettingsUI : MonoBehaviour
         SetSliderDefaults(sfxSlider);
         SetSliderDefaults(uiSlider);
 
-        // Load saved values
-        musicSlider.value = AudioManager.Instance.GetVolume("MusicVolume");
-        sfxSlider.value = AudioManager.Instance.GetVolume("SFXVolume");
-        uiSlider.value = AudioManager.Instance.GetVolume("UIVolume");
+        // Load saved values using AudioManager's constants
+        musicSlider.value = AudioManager.Instance.GetVolume(AudioManager.MUSIC_VOL);
+        sfxSlider.value = AudioManager.Instance.GetVolume(AudioManager.SFX_VOL);
+        uiSlider.value = AudioManager.Instance.GetVolume(AudioManager.UI_VOL);
 
         // Register listeners
         musicSlider.onValueChanged.AddListener(AudioManager.Instance.SetMusicVolume);
