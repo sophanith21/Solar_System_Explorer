@@ -1176,7 +1176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d52f30b31f8ea412793b9f7b616008de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextScene: Exploration Mode
+  nextScene: DifficultyScene
 --- !u!114 &510200546
 MonoBehaviour:
   m_ObjectHideFlags: 0
