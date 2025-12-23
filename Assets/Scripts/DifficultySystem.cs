@@ -36,6 +36,7 @@ public class DifficultySystem : MonoBehaviour
     public float moderateLimit = 10f;
 
     [Header("Registered Planets (Runtime)")]
+    public SolarSystemSpawner solarSystemSpawner;
     public List<PlanetInfo> planets = new();
 
     [Header("Mission Pools")]
@@ -81,7 +82,7 @@ public class DifficultySystem : MonoBehaviour
                 PlanetInfo start = planets[i];
                 PlanetInfo dest = planets[j];
 
-                float distanceAU = Mathf.Abs(start.auFromSun - dest.auFromSun);
+                float distanceAU = Vector3.Distance(start.planetObject.transform.position, dest.planetObject.transform.position)/solarSystemSpawner.distanceScale;
 
                 DistanceCategory category =
                     distanceAU <= easyLimit ? DistanceCategory.Easy :
