@@ -126,4 +126,24 @@ public class SFXManager : MonoBehaviour
         if (loseSound != null)
             sfxSource.PlayOneShot(loseSound);
     }
+
+    // ================= Volume Control =================
+    public void SetMusicVolume(float value)
+    {
+        audioMixer.SetFloat("MusicVolume", Mathf.Log10(value) * 20);
+        PlayerPrefs.SetFloat("MusicVolume", value);
+    }
+
+    public void SetSFXVolume(float value)
+    {
+        audioMixer.SetFloat("SFXVolume", Mathf.Log10(value) * 20);
+        PlayerPrefs.SetFloat("SFXVolume", value);
+    }
+
+    public void SetUIVolume(float value)
+    {
+        audioMixer.SetFloat("UIVolume", Mathf.Log10(value) * 20);
+        PlayerPrefs.SetFloat("UIVolume", value);
+    }
+
 }
