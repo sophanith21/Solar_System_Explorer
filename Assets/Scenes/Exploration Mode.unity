@@ -2179,22 +2179,22 @@ PrefabInstance:
     - target: {fileID: 1584471573960825143, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7518046
+      value: 0.75180453
       objectReference: {fileID: 0}
     - target: {fileID: 1584471573960825143, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.008412278
+      value: 0.008412277
       objectReference: {fileID: 0}
     - target: {fileID: 1584471573960825143, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.65929115
+      value: 0.6592912
       objectReference: {fileID: 0}
     - target: {fileID: 1584471573960825143, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.0073771016
+      value: -0.0073771044
       objectReference: {fileID: 0}
     - target: {fileID: 2065415998427779272, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
@@ -2909,7 +2909,7 @@ PrefabInstance:
     - target: {fileID: 5938934445753259117, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
       propertyPath: distanceToTeleport
-      value: 500
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 5938934445753259117, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
@@ -3009,22 +3009,22 @@ PrefabInstance:
     - target: {fileID: 6645804383417131878, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7518046
+      value: 0.75180453
       objectReference: {fileID: 0}
     - target: {fileID: 6645804383417131878, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.008412274
+      value: 0.008412277
       objectReference: {fileID: 0}
     - target: {fileID: 6645804383417131878, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.65929115
+      value: 0.6592912
       objectReference: {fileID: 0}
     - target: {fileID: 6645804383417131878, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.007377097
+      value: -0.0073771044
       objectReference: {fileID: 0}
     - target: {fileID: 6780842182624613731, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
@@ -3129,22 +3129,22 @@ PrefabInstance:
     - target: {fileID: 8438722331001098051, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7518046
+      value: 0.75180453
       objectReference: {fileID: 0}
     - target: {fileID: 8438722331001098051, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.0084122745
+      value: 0.008412277
       objectReference: {fileID: 0}
     - target: {fileID: 8438722331001098051, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.65929115
+      value: 0.6592912
       objectReference: {fileID: 0}
     - target: {fileID: 8438722331001098051, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.007377098
+      value: -0.0073771044
       objectReference: {fileID: 0}
     - target: {fileID: 8502307218804101357, guid: 73032a1bcf63f42d7a7045d78b4c3120,
         type: 3}
@@ -3620,6 +3620,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   easyLimit: 1
   moderateLimit: 10
+  solarSystemSpawner: {fileID: 1717864291}
   planets: []
   easyMissions: []
   moderateMissions: []
@@ -3703,7 +3704,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac0c49ae1e9c63346b6c780be9c77604, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  winningDistance: 100
+  winningDistance: 20
   navigationSystem: {fileID: 1762009396}
   missionSelector: {fileID: 2132817399}
 --- !u!1001 &964614240990807304

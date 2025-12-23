@@ -14,4 +14,21 @@ public class LoadSence : MonoBehaviour
     {
         SceneManagement.Instance.GoBack();
     }
+    public void LoadEasyScene(string sceneName)
+    {
+        DifficultyStorage.SelectedDifficulty = GameDifficulty.Easy;
+        SceneManager.LoadScene(sceneName);
+    }
+
+    public void LoadModerateScene(string sceneName)
+    {
+        DifficultyStorage.SelectedDifficulty = GameDifficulty.Moderate;
+        SceneManager.LoadScene(sceneName);
+    }
+
+    public void LoadHardScene(string sceneName)
+    {
+        DifficultyStorage.SelectedDifficulty = GameDifficulty.Hard;
+        SceneManager.LoadScene(sceneName);
+    }
 }
