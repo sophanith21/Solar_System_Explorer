@@ -19,13 +19,12 @@ public class GameManager : MonoBehaviour
 
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         currentDistance = navigationSystem.planetsDistance[missionSelector.currentMission.destinationPlanet.name];
         if (currentDistance < winningDistance)
         {
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
+            
             SceneManagement.Instance.LoadScene("Winning Scene");
             SFXManager.Instance.PlayWin();
         }

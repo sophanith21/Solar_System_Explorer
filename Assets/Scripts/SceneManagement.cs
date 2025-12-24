@@ -26,6 +26,11 @@ public class SceneManagement : MonoBehaviour
         // Save previous scene by name
         previousScene = SceneManager.GetActiveScene().name;
         Time.timeScale = 1f;
+        if (sceneName!= "Exploration Mode")
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
         SceneManager.LoadScene(sceneName);
     }
 
