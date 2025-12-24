@@ -202,6 +202,7 @@ public class spaceshipUI : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         SceneManagement.Instance.LoadScene("Losing Scene");
+        SFXManager.Instance.PlayLose();
     }
 
 

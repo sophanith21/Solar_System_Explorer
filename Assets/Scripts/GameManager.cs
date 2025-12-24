@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
             SceneManagement.Instance.LoadScene("Winning Scene");
+            SFXManager.Instance.PlayWin();
         }
     }
 }

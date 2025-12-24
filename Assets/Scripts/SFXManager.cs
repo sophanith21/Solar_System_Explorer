@@ -30,6 +30,8 @@ public class SFXManager : MonoBehaviour
     private float currentThrustVolume = 0f;
     private const float thrustFadeSpeed = 3f;
 
+    float thrustEnd = 0.6f;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -97,7 +99,11 @@ public class SFXManager : MonoBehaviour
     public void StartEngineIdle()
     {
         if (!engineSource.isPlaying && engineIdleSound != null)
+        {
+            engineSource.volume = 0.5f;
             engineSource.Play();
+        }
+            
     }
 
     public void StopEngineIdle()
@@ -109,14 +115,15 @@ public class SFXManager : MonoBehaviour
     public void StartThrust(float power = 1f)
     {
         if (thrustSound == null) return;
-        
+
         isThrusting = true;
         targetThrustVolume = Mathf.Clamp01(power);
-        
-        if (thrustSource.clip == null)
+
+        if (!thrustSource.isPlaying)
         {
             thrustSource.clip = thrustSound;
-            thrustSource.time = Mathf.Min(1f, thrustSound.length * 0.1f);
+            thrustSource.time = Mathf.Clamp(thrustSound.length * (power * 0.2f),0f,thrustEnd);
+            thrustSource.Play();
         }
     }
 

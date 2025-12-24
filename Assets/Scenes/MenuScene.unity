@@ -558,6 +558,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: SFXManager
       objectReference: {fileID: 0}
+    - target: {fileID: 3718430081219599764, guid: ac55058265e99cc4bba9b0910fcdc538,
+        type: 3}
+      propertyPath: thrustSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 197849c7e4942074c84564d835058b48, type: 3}
+    - target: {fileID: 3718430081219599764, guid: ac55058265e99cc4bba9b0910fcdc538,
+        type: 3}
+      propertyPath: engineIdleSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 516a8d3a46fce0544aa45a1b64bbdffa, type: 3}
     - target: {fileID: 3800881107603649413, guid: ac55058265e99cc4bba9b0910fcdc538,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -611,8 +621,36 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 9552790764242877, guid: ac55058265e99cc4bba9b0910fcdc538,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 290951685}
   m_SourcePrefab: {fileID: 100100000, guid: ac55058265e99cc4bba9b0910fcdc538, type: 3}
+--- !u!1 &290951684 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9552790764242877, guid: ac55058265e99cc4bba9b0910fcdc538,
+    type: 3}
+  m_PrefabInstance: {fileID: 290951683}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &290951685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 290951684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b3b921174b9ccf4f8fccfa940b3753d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioMixer: {fileID: 24100000, guid: 3a3f96fc754031b418bfc9a563c4dd26, type: 2}
+  learningModeMusic: {fileID: 8300000, guid: f5ee21cf8fb714d6492f4bd36526832c, type: 3}
+  explorationModeMusic: {fileID: 8300000, guid: a5fde12e27b1441468fbf3e084cbe453,
+    type: 3}
+  fadeDuration: 1
+  defaultMusicVolume: 0.7
 --- !u!4 &412911096 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4024914263291546, guid: 835acc1a9ebe24c0fa3854c99346f9cd,

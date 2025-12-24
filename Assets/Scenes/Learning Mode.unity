@@ -633,7 +633,7 @@ PrefabInstance:
     - target: {fileID: 6433334504693597259, guid: bafd2c488b67b244f9c7058d67d7b399,
         type: 3}
       propertyPath: simulationSpeed
-      value: 0.05
+      value: 0.0005
       objectReference: {fileID: 0}
     - target: {fileID: 8836406318409093347, guid: bafd2c488b67b244f9c7058d67d7b399,
         type: 3}
@@ -1283,7 +1283,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 100000
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -1378,8 +1378,8 @@ MonoBehaviour:
   lookSpeed: 2
   scrollSpeed: 500
   boostMultiplier: 2
-  orbitSpeed: 90
-  orbitDistanceMultiplier: 2.5
+  orbitSpeed: 60
+  orbitDistanceMultiplier: 3.5
 --- !u!1001 &1789690786
 PrefabInstance:
   m_ObjectHideFlags: 0
