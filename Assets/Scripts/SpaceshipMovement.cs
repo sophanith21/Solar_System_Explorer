@@ -163,8 +163,8 @@ public class SpaceshipRB : MonoBehaviour
 
         if (Input.GetKey(KeyCode.W))
         {
-            SFXManager.Instance.StopEngineIdle();
-            SFXManager.Instance.StartThrust();
+            // SFXManager.Instance.StopEngineIdle();
+            SFXManager.Instance.StartThrust(rb.velocity.magnitude);
             rb.AddForce(transform.forward * currentThrust, ForceMode.Acceleration);
 
             // Gated Particle Logic: Only calls Play/Stop when switching states to prevent flickering
@@ -181,8 +181,8 @@ public class SpaceshipRB : MonoBehaviour
         }
         else if (Input.GetKey(KeyCode.S))
         {
-            SFXManager.Instance.StopEngineIdle();
-            SFXManager.Instance.StartThrust();
+            // SFXManager.Instance.StopEngineIdle();
+            SFXManager.Instance.StartThrust(rb.velocity.magnitude);
             rb.AddForce(-transform.forward * (thrustForce * reverseMultiplier), ForceMode.Acceleration);
             currentMaxSpeed = maxSpeed * reverseMultiplier;
             StopAllThrusters();
@@ -191,7 +191,7 @@ public class SpaceshipRB : MonoBehaviour
         {
             // Neutral state: Return to idle sounds and kill all exhaust particles
             SFXManager.Instance.StopThrust();
-            SFXManager.Instance.StartEngineIdle();
+            // SFXManager.Instance.StartEngineIdle();
             StopAllThrusters();
         }
 

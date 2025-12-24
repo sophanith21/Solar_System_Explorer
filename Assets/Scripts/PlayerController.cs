@@ -13,32 +13,37 @@ public class FreeCameraController : MonoBehaviour
     public float boostMultiplier = 5f;
 
     [Header("Focus Settings")]
-    // Orbit settings
-    public float orbitSpeed = 90f; // degrees per second
-    public float orbitDistanceMultiplier = 2.5f;
+    public float orbitSpeed = 45f; // Degrees per second
+    public float orbitDistanceMultiplier = 3.0f;
 
-    float rotationX = 0f;
-    float rotationY = 0f;
-
-    Coroutine focusRoutine;
+    private float rotationX = 0f;
+    private float rotationY = 0f;
+    private bool isFocusing = false; // Prevents manual input from fighting the orbit
+    private Coroutine focusRoutine;
 
     void Update()
     {
         if (SceneManager.GetActiveScene().name == "Learning Mode")
         {
-            HandleLook();
-            HandleMovement();
-            if (Input.GetKeyDown(KeyCode.M))
+            // Only allow manual control if NOT currently auto-orbiting
+            if (!isFocusing)
             {
-                TogglePause();
+                HandleLook();
+                HandleMovement();
             }
+            else
+            {
+                if (Mathf.Abs(Input.GetAxis("Horizontal")) > 0.1f || Mathf.Abs(Input.GetAxis("Vertical")) > 0.1f)
+                {
+                    StopFocus();
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.M)) TogglePause();
         }
     }
 
-    public void TogglePause()
-    {
-        pauseMenu.SetActive(!pauseMenu.activeSelf);
-    }
+    public void TogglePause() => pauseMenu.SetActive(!pauseMenu.activeSelf);
 
     void HandleLook()
     {
@@ -47,7 +52,6 @@ public class FreeCameraController : MonoBehaviour
             rotationX += Input.GetAxis("Mouse X") * lookSpeed;
             rotationY -= Input.GetAxis("Mouse Y") * lookSpeed;
             rotationY = Mathf.Clamp(rotationY, -90f, 90f);
-
             transform.rotation = Quaternion.Euler(rotationY, rotationX, 0f);
         }
     }
@@ -56,18 +60,14 @@ public class FreeCameraController : MonoBehaviour
     {
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
-
         Vector3 move = transform.forward * v + transform.right * h;
-
         if (Input.GetKey(KeyCode.Q)) move += Vector3.down * 2f;
         if (Input.GetKey(KeyCode.E)) move += Vector3.up * 2f;
 
         float speed = moveSpeed;
         if (Input.GetKey(KeyCode.LeftShift)) speed *= boostMultiplier;
 
-        float distanceFromCenter = transform.position.magnitude;
-        float dynamicMultiplier = Mathf.Max(1f, distanceFromCenter * 0.01f);
-
+        float dynamicMultiplier = Mathf.Max(1f, transform.position.magnitude * 0.01f);
         transform.position += move * speed * dynamicMultiplier * Time.deltaTime;
 
         float scroll = Input.GetAxis("Mouse ScrollWheel");
@@ -76,74 +76,69 @@ public class FreeCameraController : MonoBehaviour
 
     public void FocusOnPlanet(Transform planet, bool followPlanet = true)
     {
-        if (focusRoutine != null)
-            StopCoroutine(focusRoutine);
-
-        // Only these planets orbit
-        bool shouldOrbit = planet.name == "Jupiter" || planet.name == "Saturn" ||
-                           planet.name == "Uranus" || planet.name == "Neptune";
-
-        focusRoutine = StartCoroutine(FocusOn(planet, followPlanet, shouldOrbit));
+        StopFocus();
+        isFocusing = true;
+        focusRoutine = StartCoroutine(FocusOn(planet, followPlanet));
     }
 
-    IEnumerator FocusOn(Transform target, bool followPlanet, bool orbitPlanet)
+    public void StopFocus()
     {
-        // Initial direction & distance
-        Vector3 direction = (transform.position - target.position).normalized;
-        float baseDistance = target.localScale.x * orbitDistanceMultiplier;
+        if (focusRoutine != null) StopCoroutine(focusRoutine);
+        isFocusing = false;
 
-        // Smooth initial move
-        Vector3 targetPos = target.position + direction * baseDistance;
+        Vector3 rot = transform.eulerAngles;
+        rotationX = rot.y;
+        rotationY = rot.x;
+    }
+
+    IEnumerator FocusOn(Transform target, bool followPlanet)
+    {
+        float distance = target.localScale.x * orbitDistanceMultiplier;
+
+        // Find the starting angle based on current camera position relative to target
+        Vector3 dirFromTarget = (transform.position - target.position).normalized;
+        float currentAngleRad = Mathf.Atan2(dirFromTarget.x, dirFromTarget.z);
+
+        // 1. Smooth Transition Phase
         float t = 0f;
         Vector3 startPos = transform.position;
         Quaternion startRot = transform.rotation;
 
         while (t < 1f)
         {
-            t += Time.deltaTime;
-            transform.position = Vector3.Lerp(startPos, targetPos, t);
-            transform.rotation = Quaternion.Slerp(
-                startRot,
-                Quaternion.LookRotation(target.position - transform.position),
-                t
-            );
+            t += Time.deltaTime * 1.5f; // Transition speed
+
+            // Calculate point on orbit circle using currentAngleRad
+            Vector3 orbitPathPos = target.position + new Vector3(Mathf.Sin(currentAngleRad), 0, Mathf.Cos(currentAngleRad)) * distance;
+
+            transform.position = Vector3.Lerp(startPos, orbitPathPos, t);
+
+            Vector3 lookDir = target.position - transform.position;
+            if (lookDir != Vector3.zero)
+                transform.rotation = Quaternion.Slerp(startRot, Quaternion.LookRotation(lookDir), t);
+
             yield return null;
         }
 
+        // 2. Continuous Orbit Loop
         while (followPlanet)
         {
-            if (orbitPlanet)
-            {
-                // Calculate current offset from planet
-                Vector3 offset = transform.position - target.position;
+            // Update the angle over time 
+            currentAngleRad += (orbitSpeed * Mathf.Deg2Rad) * Time.deltaTime;
 
-                // Keep distance proportional to planet size
-                float desiredDistance = target.localScale.x * orbitDistanceMultiplier;
-                offset = offset.normalized * desiredDistance;
+            // Position = Target + [Sin(angle), 0, Cos(angle)] * Distance
+            Vector3 offset = new Vector3(
+                Mathf.Sin(currentAngleRad) * distance,
+                0, // Orbiting on the horizontal plane
+                Mathf.Cos(currentAngleRad) * distance
+            );
 
-                // Apply orbit around the planet
-                transform.RotateAround(target.position, Vector3.up, orbitSpeed * Time.deltaTime);
-
-                // After rotation, adjust position to maintain consistent distance
-                Vector3 newOffset = transform.position - target.position;
-                newOffset = newOffset.normalized * desiredDistance;
-                transform.position = target.position + newOffset;
-
-
-                // Always look at the planet
-                transform.LookAt(target.position);
-            }
-            else
-            {
-                // Non-orbit planets: follow at fixed offset
-                Vector3 followPos = target.position + direction * baseDistance;
-                transform.position = followPos;
-                transform.LookAt(target.position);
-
-            }
+            transform.position = target.position + offset;
+            transform.LookAt(target.position);
 
             yield return null;
         }
 
+        isFocusing = false;
     }
 }

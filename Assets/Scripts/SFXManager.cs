@@ -8,26 +8,29 @@ public class SFXManager : MonoBehaviour
     [Header("Audio Mixer")]
     [SerializeField] private AudioMixer audioMixer;
 
-    // ---------------- UI ----------------
     [Header("UI Sounds")]
     [SerializeField] private AudioClip uiClick;
 
-    // ---------------- Spaceship ----------------
     [Header("Spaceship Sounds")]
     [SerializeField] private AudioClip engineIdleSound;
     [SerializeField] private AudioClip thrustSound;
     [SerializeField] private AudioClip collisionSound;
 
-    // ---------------- Game State ----------------
     [Header("Game State Sounds")]
     [SerializeField] private AudioClip winSound;
     [SerializeField] private AudioClip loseSound;
 
-    // ---------------- Audio Sources ----------------
     private AudioSource uiSource;
     private AudioSource sfxSource;
     private AudioSource engineSource;
     private AudioSource thrustSource;
+
+    private bool isThrusting = false;
+    private float targetThrustVolume = 0f;
+    private float currentThrustVolume = 0f;
+    private const float thrustFadeSpeed = 3f;
+
+    float thrustEnd = 0.6f;
 
     private void Awake()
     {
@@ -43,45 +46,64 @@ public class SFXManager : MonoBehaviour
 
     private void Start()
     {
-        // UI sounds
         uiSource = gameObject.AddComponent<AudioSource>();
-        uiSource.outputAudioMixerGroup =
-            audioMixer.FindMatchingGroups("UI")[0];
+        uiSource.outputAudioMixerGroup = audioMixer.FindMatchingGroups("UI")[0];
 
-        // One-shot SFX
         sfxSource = gameObject.AddComponent<AudioSource>();
-        sfxSource.outputAudioMixerGroup =
-            audioMixer.FindMatchingGroups("SFX")[0];
+        sfxSource.outputAudioMixerGroup = audioMixer.FindMatchingGroups("SFX")[0];
 
-        // Engine idle loop
         engineSource = gameObject.AddComponent<AudioSource>();
         engineSource.clip = engineIdleSound;
         engineSource.loop = true;
         engineSource.playOnAwake = false;
-        engineSource.outputAudioMixerGroup =
-            audioMixer.FindMatchingGroups("SFX")[0];
+        engineSource.outputAudioMixerGroup = audioMixer.FindMatchingGroups("SFX")[0];
 
-        // Thrust loop
         thrustSource = gameObject.AddComponent<AudioSource>();
-        thrustSource.clip = thrustSound;
         thrustSource.loop = true;
         thrustSource.playOnAwake = false;
-        thrustSource.outputAudioMixerGroup =
-            audioMixer.FindMatchingGroups("SFX")[0];
+        thrustSource.volume = 0f;
+        thrustSource.outputAudioMixerGroup = audioMixer.FindMatchingGroups("SFX")[0];
     }
 
-    // ================= UI =================
+    private void Update()
+    {
+        if (Mathf.Abs(currentThrustVolume - targetThrustVolume) > 0.01f)
+        {
+            currentThrustVolume = Mathf.MoveTowards(currentThrustVolume, targetThrustVolume, 
+                thrustFadeSpeed * Time.deltaTime);
+            thrustSource.volume = currentThrustVolume;
+            thrustSource.pitch = Mathf.Lerp(0.8f, 1.2f, currentThrustVolume);
+            
+            if (currentThrustVolume > 0.01f && thrustSound != null && !thrustSource.isPlaying)
+            {
+                if (thrustSource.clip == null)
+                {
+                    thrustSource.clip = thrustSound;
+                }
+                thrustSource.Play();
+            }
+            else if (currentThrustVolume <= 0.01f && thrustSource.isPlaying)
+            {
+                thrustSource.Stop();
+                thrustSource.clip = null;
+            }
+        }
+    }
+
     public void PlayUIClick()
     {
         if (uiClick != null)
             uiSource.PlayOneShot(uiClick);
     }
 
-    // ================= Spaceship =================
     public void StartEngineIdle()
     {
         if (!engineSource.isPlaying && engineIdleSound != null)
+        {
+            engineSource.volume = 0.5f;
             engineSource.Play();
+        }
+            
     }
 
     public void StopEngineIdle()
@@ -94,27 +116,29 @@ public class SFXManager : MonoBehaviour
     {
         if (thrustSound == null) return;
 
-        thrustSource.volume = Mathf.Clamp01(power);
-        thrustSource.pitch = Mathf.Lerp(0.9f, 1.2f, power);
+        isThrusting = true;
+        targetThrustVolume = Mathf.Clamp01(power);
 
         if (!thrustSource.isPlaying)
+        {
+            thrustSource.clip = thrustSound;
+            thrustSource.time = Mathf.Clamp(thrustSound.length * (power * 0.2f),0f,thrustEnd);
             thrustSource.Play();
+        }
     }
 
     public void StopThrust()
     {
-        if (thrustSource.isPlaying)
-            thrustSource.Stop();
+        isThrusting = false;
+        targetThrustVolume = 0f;
     }
 
     public void PlayCollision()
     {
         if (collisionSound != null)
             sfxSource.PlayOneShot(collisionSound);
-        Debug.Log("Playing collision sound");
     }
 
-    // ================= Game State =================
     public void PlayWin()
     {
         if (winSound != null)
@@ -146,4 +170,14 @@ public class SFXManager : MonoBehaviour
         PlayerPrefs.SetFloat("UIVolume", value);
     }
 
+    
+    public bool IsThrusting
+    {
+        get { return isThrusting; }
+    }
+    
+    public float CurrentThrustVolume
+    {
+        get { return currentThrustVolume; }
+    }
 }
