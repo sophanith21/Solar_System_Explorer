@@ -90,7 +90,7 @@ public class MusicManager : MonoBehaviour
             musicSource.Stop();
         }
         
-        if (newClip != null && musicSource.clip != newClip)
+        if (newClip != null && (musicSource.clip != newClip || !musicSource.isPlaying))
         {
             musicSource.clip = newClip;
             musicSource.Play();
