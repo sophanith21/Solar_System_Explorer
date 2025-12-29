@@ -44,7 +44,7 @@
 
 ### How to Run
 
-1. Download the latest build from the [Releases]([https://www.google.com/search?q=link-to-github-releases](https://github.com/sophanith21/Solar_System_Explorer/releases)) page.
+1. Download the latest build from the [Releases](https://github.com/sophanith21/Solar_System_Explorer/releases) page.
 2. Run `Solar System Explorer.exe` for Windows and `Solar System Explorer` for Mac.
 
 ### Controls
