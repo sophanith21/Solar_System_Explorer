@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
 
+// This script is for controlling the player camera in learning mode
 public class FreeCameraController : MonoBehaviour
 {
     [Header("Pause Settings")]
