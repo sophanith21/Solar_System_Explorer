@@ -20,8 +20,6 @@
 
 ## 4. Technical Implementation
 
-This is where you prove your technical skills. Mention specific Unity systems you used:
-
 - **Architecture:** Singleton patterns (Audio Manager, Scene Manager, etc are created once and used in all scenes).
 - **Tools Used:** Cinemachine
 - **External Assets:**
